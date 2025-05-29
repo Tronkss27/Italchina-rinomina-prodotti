@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Renamer - Rinomina Immagini</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Image Renamer</h1>
+            <p>Rinomina automaticamente i tuoi file con precisione professionale</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    
+                    <!-- Sezione File di Mapping -->
+                    <div class="form-group">
+                        <label for="mappingFile">
+                            <strong>File di Mapping (CSV o Excel)</strong>
+                        </label>
+                        <div class="file-info">
+                            <p>Carica un file CSV o Excel con 2 colonne:</p>
+                            <ul>
+                                <li><strong>Colonna A:</strong> Nomi attuali delle immagini (senza estensione)</li>
+                                <li><strong>Colonna B:</strong> Nuovi nomi desiderati</li>
+                            </ul>
+                            <p><a href="/download-example-csv">Scarica CSV di esempio</a></p>
+                        </div>
+                        <input type="file" id="mappingFile" name="mapping_file" 
+                               accept=".csv,.xlsx,.xls" required>
+                        <div class="file-preview" id="mappingPreview"></div>
+                    </div>
+
+                    <!-- Sezione Immagini -->
+                    <div class="form-group">
+                        <label for="imageFiles">
+                            <strong>Immagini da Rinominare</strong>
+                        </label>
+                        <div class="file-info">
+                            <p><strong>Carica una cartella completa</strong> o seleziona file singoli</p>
+                            <p><em>Formati supportati: PNG, JPG, JPEG, BMP, GIF</em></p>
+                            <p><em>Tutti i risultati verranno esportati in una cartella ZIP unica</em></p>
+                        </div>
+                        
+                        <div class="upload-options">
+                            <div class="upload-option">
+                                <input type="file" id="imageFiles" name="images" 
+                                       accept=".png,.jpg,.jpeg,.bmp,.gif" multiple>
+                                <label for="imageFiles" class="upload-label">
+                                    Selezione File Multipli
+                                </label>
+                            </div>
+                            
+                            <div class="upload-option">
+                                <input type="file" id="folderInput" name="folder" 
+                                       webkitdirectory directory multiple>
+                                <label for="folderInput" class="upload-label">
+                                    Carica Intera Cartella
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="file-preview" id="imagesPreview"></div>
+                    </div>
+
+                    <!-- Pulsante di Elaborazione -->
+                    <div class="form-group">
+                        <button type="submit" id="processBtn" class="process-btn">
+                            Avvia Rinominazione
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Area dei Risultati -->
+            <div id="resultsSection" class="results-section" style="display: none;">
+                <h2>Risultati Processamento</h2>
+                <div id="resultsContent"></div>
+                <div id="downloadSection" style="display: none;">
+                    <div class="download-info">
+                        <h3>Export Completato</h3>
+                        <p>Tutte le immagini rinominate sono state raccolte in una <strong>cartella ZIP unica</strong></p>
+                        <p>Il file ZIP contiene tutti i risultati pronti per l'uso</p>
+                    </div>
+                    <a href="#" id="downloadBtn" class="download-btn">
+                        Scarica Cartella ZIP con Tutte le Immagini
+                    </a>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Elaborazione in corso...</p>
+            </div>
+
+            <!-- Area Errori -->
+            <div id="errorSection" class="error-section" style="display: none;">
+                <h3>Errore</h3>
+                <div id="errorContent"></div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="info-box">
+                <h3>Guida all'uso:</h3>
+                <ol>
+                    <li><strong>Prepara il file di mapping:</strong> Crea un CSV o Excel con i nomi attuali (colonna A) e i nuovi nomi (colonna B)</li>
+                    <li><strong>Seleziona il file di mapping:</strong> Carica il tuo CSV/Excel</li>
+                    <li><strong>Seleziona le immagini:</strong> 
+                        <ul>
+                            <li><strong>File singoli:</strong> Scegli più immagini manualmente</li>
+                            <li><strong>Cartella completa:</strong> Seleziona un'intera cartella (include sottocartelle)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Elabora:</strong> Clicca "Avvia Rinominazione" e attendi il processamento</li>
+                    <li><strong>Scarica:</strong> Ottieni un file ZIP con tutte le immagini rinominate in una cartella unica</li>
+                </ol>
+                
+                <div class="example">
+                    <h4>Esempio file CSV:</h4>
+                    <pre>NomeOriginale,NuovoNome
+IMG001,PRD001
+IMG002,PRD002
+SKU123,ITEM456</pre>
+                    
+                    <h4>Vantaggi Upload Cartella:</h4>
+                    <ul>
+                        <li>Carica centinaia di immagini in un click</li>
+                        <li>Mantiene la struttura delle sottocartelle</li>
+                        <li>Filtra automaticamente solo i file immagine</li>
+                        <li>Export tutto in una cartella ZIP organizzata</li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 
