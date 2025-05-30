@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: image-renamer
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python web_app.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "1" 
