@@ -1,4 +1,4 @@
-# Dockerfile per Image Renamer MVP
+# Dockerfile per Image Renamer - Railway Compatible
 FROM python:3.9-slim
 
 # Imposta variabili d'ambiente
@@ -15,19 +15,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia il codice sorgente
 COPY . .
 
-# Crea directory per volumi
-RUN mkdir -p /app/data/input /app/data/output
+# Crea directory necessarie
+RUN mkdir -p uploads output
 
-# Imposta l'entrypoint
-ENTRYPOINT ["python", "app.py"]
+# Espone la porta (Railway la detecta automaticamente)
+EXPOSE 5000
 
-# Comando di default (mostra help)
-CMD ["--help"]
+# Comando per avviare la web app
+CMD ["python", "web_app.py"]
 
 # Metadati
 LABEL version="1.0.0"
-LABEL description="Image Renamer MVP - Rinomina immagini basato su mapping Excel"
-LABEL maintainer="Image Renamer Team"
-
-# Volumi suggeriti per i dati
-VOLUME ["/app/data"] 
+LABEL description="Image Renamer Web App - Railway Ready"
+LABEL maintainer="Image Renamer Team" 
